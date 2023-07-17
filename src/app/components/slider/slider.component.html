@@ -1,0 +1,23 @@
+<main class="flex justify-center items-center gap-2 relative w-80 h-80 my-4">
+  <mat-icon
+    class="absolute top-36 left-1 w-12 h-12 rounded-full z-10 text-4xl text-center leading-tight cursor-pointer"
+    [style.background]="theme.textPrimary"
+    [style.color]="theme.background"
+    *ngIf="currentIndex > 0"
+    (click)="goLeft()"
+    >navigate_before</mat-icon
+  >
+  <img
+    class="w-10/12 max-h-full rounded-lg"
+    src="{{ slide.imageUrl }}"
+    alt="{{ slide.title }}"
+  />
+  <mat-icon
+    class="absolute top-36 right-1 w-12 h-12 rounded-full z-10 text-4xl text-center leading-tight cursor-pointer"
+    [style.background]="theme.textPrimary"
+    [style.color]="theme.background"
+    *ngIf="currentIndex < slides.length"
+    (click)="goRight()"
+    >navigate_next</mat-icon
+  >
+</main>

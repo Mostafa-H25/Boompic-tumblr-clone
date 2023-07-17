@@ -1,0 +1,64 @@
+<!-- Replies -->
+<main class="my-4">
+  <!-- User -->
+  <div class="flex items-start gap-2">
+    <!-- User Picture -->
+    <img
+      class="w-8 h-8 rounded-full"
+      src="{{ reply.user.profilePic }}"
+      alt="{{ reply.user.profilePic }}"
+    />
+    <div class="flex-auto border rounded-lg p-4">
+      <!-- username -->
+      <div>
+        <p class="m-0 font-bold">
+          {{ reply.user.firstName | titlecase }}
+          {{ reply.user.lastName | titlecase }}
+        </p>
+        <p>{{ reply.user.email }}</p>
+        <p class="m-0">{{ reply.reply }}</p>
+      </div>
+    </div>
+
+    <!-- More Options -->
+    <li
+      class="relative list-none"
+      [style.color]="theme.textPrimary"
+      appClickedOutside
+      (clickedOutside)="clickedOutside('options')"
+    >
+      <!-- Dropdown Button -->
+      <mat-icon
+        class="rounded-full p-2 w-auto h-auto cursor-pointer hover:bg-gray-600/50"
+        (click)="toggleOptions()"
+        >more_horiz</mat-icon
+      >
+
+      <!-- Dropdown Content -->
+      <ul
+        class="flex flex-col items-center absolute top-8 -left-24 w-52 z-10 rounded-md"
+        [style.boxShadow]="
+          'rgba(50, 50, 93, 0.25) 0px 30px 60px -12px, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px'
+        "
+        [style.background]="theme.primaryDefault"
+        *ngIf="isOptionsOpen"
+      >
+        <li
+          class="w-full p-2 text-center font-bold text-red-600 hover:bg-gray-400"
+        >
+          Report
+        </li>
+        <li
+          class="w-full p-2 text-center font-bold text-red-600 hover:bg-gray-400"
+        >
+          Block
+        </li>
+        <li
+          class="w-full rounded-b-md p-2 text-center font-bold hover:bg-gray-400"
+        >
+          Close
+        </li>
+      </ul>
+    </li>
+  </div>
+</main>

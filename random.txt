@@ -1,0 +1,94 @@
+    <article class="rounded-sm my-2" [style.background]="theme.primaryDefault">
+      <div
+        class="flex justify-between items-center gap-2 p-4 hover:bg-gray-400/50"
+      >
+        <div class="flex items-center gap-2">
+          <!-- User Picture
+          <img
+            class="w-8 h-8 rounded-md bg-white p-auto"
+            src="{{ randomPost.imageUrl }}"
+            alt="{{ randomPost.imageUrl }}"
+          />
+          <!-- Username -->
+          <p class="m-0 font-bold">{{ randomPost.user.email }}</p>
+          <!-- Follow Button -->
+          <button
+            class="p-0 hover:border-b"
+            [style.color]="theme.linkPrimary"
+            [style.borderColor]="theme.linkPrimary"
+            *ngIf="!this.baseUser.following.has(randomPost.user.userId)"
+            (click)="follow(baseUser.userId, randomPost.user.userId)"
+          >
+            Follow
+          </button>
+          <!-- <button>Follow</button> -->
+        </div>
+
+        <mat-icon>more_horiz</mat-icon>
+        <ul class="hidden">
+          <li><a href="">Time</a></li>
+          <li><a href="">Community Label</a></li>
+          <hr />
+          <li><a href="">Copy Link</a></li>
+          <li><a href="">Close</a></li>
+        </ul>
+      </div>
+
+      <p class="p-4">'{{ "post.caption" }}'</p>
+      <!-- <img
+        [routerLink]="['/dashboard', post.postId]"
+        class="w-full cursor-pointer"
+        src="/assests/images/posts/post.bmp"
+        alt="{{ post.imageUrl }}"
+      /> -->
+      <img
+        class="w-full cursor-pointer"
+        src="/assets/images/posts/post.bmp"
+        alt="{{ 'post.imageUrl' }}"
+      />
+
+      <!-- <ul class="flex items-center gap-2 p-4">
+        <li *ngFor="let tag of post.tags">
+          <a href="">#{{ tag }}</a>
+        </li>
+      </ul> -->
+
+      <footer class="flex justify-between items-center p-4">
+        <!-- <button
+          class="rounded-full border-[1px] px-4 py-2"
+          *ngIf="!notesButton; else closeNotes"
+          (click)="notesToggle()"
+        >
+          <span
+            >{{
+              post.comments.length + post.likes.size + post.reblogs.size
+            }}
+            notes</span
+          >
+        </button> -->
+        <button class="rounded-full border-[1px] px-4 py-2">
+          <span>{{ "1000" }} notes</span>
+        </button>
+        <ng-template #closeNotes>
+          <!-- <button
+            class="flex justify center items-center gap-2 rounded-full border-[1px] px-4 py-2"
+            (click)="notesToggle()"
+          >
+            <mat-icon>close</mat-icon>
+            <span>Close notes</span>
+          </button> -->
+          <button
+            class="flex justify center items-center gap-2 rounded-full border-[1px] px-4 py-2"
+          >
+            <mat-icon>close</mat-icon>
+            <span>Close notes</span>
+          </button>
+        </ng-template>
+        <div class="flex gap-2">
+          <mat-icon>share</mat-icon>
+          <mat-icon>reply</mat-icon>
+          <mat-icon>published_with_changes</mat-icon>
+          <mat-icon>favorite_border</mat-icon>
+        </div>
+      </footer>
+    </article>

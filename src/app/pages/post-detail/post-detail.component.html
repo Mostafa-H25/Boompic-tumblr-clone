@@ -1,0 +1,33 @@
+<div
+  class="fixed w-full h-screen z-20"
+  [style.background]="theme.background"
+></div>
+<main class="relative flex flex-col z-30">
+  <!-- Prev Page Button -->
+  <mat-icon class="fixed top-20 left-4 cursor-pointer" (click)="closePage()">
+    close
+  </mat-icon>
+
+  <!-- Main Post -->
+  <article class="flex justify-center items-center w-screen h-screen">
+    <img
+      class="max-h-[80%] max-w-[90%]"
+      src="{{ mainPost.imageUrl }}"
+      alt="{{ mainPost.imageUrl }}"
+    />
+  </article>
+
+  <!-- More Posts -->
+  <article class="-mt-16 mx-auto">
+    <p class="mb-12 p-4 font-bold">More Like This</p>
+    <div
+      class="grid auto-rows-max justify-items-center md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-2"
+    >
+      <app-post
+        class="min-w-80 w-10/12 md:w-80"
+        *ngFor="let post of posts"
+        [post]="post"
+      ></app-post>
+    </div>
+  </article>
+</main>

@@ -1,0 +1,186 @@
+<!-- Cover Photo -->
+<img
+  class="w-[580px] h-80 rounded-t-lg"
+  src="/assets/images/posts/post.bmp"
+  alt="cover photo"
+/>
+
+<!-- Profile Photo -->
+<img
+  class="relative w-24 h-24 -mt-12 mx-auto border-3 rounded-md"
+  [style.borderColor]="theme.primaryDefault"
+  src="{{ user.profilePic }}"
+  alt="{{ user.email }}"
+/>
+
+<!-- Username -->
+<h4 class="text-2xl text-center font-bold">
+  {{ user.firstName }} {{ user.lastName }}
+</h4>
+<p class="text-center">{{ user.email }}</p>
+
+<ul class="flex justify-center items-start gap-2">
+  <li
+    class="rounded-full p-4 font-bold"
+    [style.background]="theme.primaryLighter"
+  >
+    Ask Me Anything
+  </li>
+  <li
+    class="rounded-full p-4 font-bold"
+    [style.background]="theme.primaryLighter"
+    *ngIf="
+      !baseUser.following.has(user.userId) && user.userId !== baseUser.userId
+    "
+    (click)="follow(user.userId)"
+  >
+    {{ baseUser.following.has(user.userId) ? "Unfollow" : "Follow" }}
+  </li>
+  <li>
+    <mat-icon
+      class="rounded-full p-3 border-2 w-auto h-auto"
+      [style.borderColor]="theme.primaryLighter"
+      >redeem</mat-icon
+    >
+  </li>
+  <li>
+    <mat-icon
+      class="rounded-full p-3 border-2 w-auto h-auto"
+      [style.borderColor]="theme.primaryLighter"
+      >chat</mat-icon
+    >
+  </li>
+
+  <!-- More Options -->
+  <li
+    class="relative"
+    appClickedOutside
+    (clickedOutside)="clickedOutside('options')"
+  >
+    <!-- Dropdown Button -->
+    <mat-icon
+      class="rounded-full p-3 border-2 w-auto h-auto"
+      [style.borderColor]="theme.primaryLighter"
+      (click)="toggleOptions()"
+      >more_horiz</mat-icon
+    >
+
+    <!-- Dropdown Content -->
+    <ul
+      class="flex flex-col items-center absolute top-16 -left-24 w-52 rounded-md bg-gray-900"
+      [style.boxShadow]="
+        'rgba(50, 50, 93, 0.25) 0px 30px 60px -12px, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px'
+      "
+      *ngIf="isOptionsOpen"
+    >
+      <li
+        class="w-full rounded-t-md p-2 text-center font-bold hover:bg-gray-400"
+      >
+        View Archive
+      </li>
+      <li class="w-full p-2 text-center font-bold hover:bg-gray-400">
+        Share to Twitter
+      </li>
+      <li class="w-full p-2 text-center font-bold hover:bg-gray-400">
+        Share to Facebook
+      </li>
+      <li class="w-full p-2 text-center font-bold hover:bg-gray-400">
+        Following
+      </li>
+      <li class="w-full p-2 text-center font-bold hover:bg-gray-400">Submit</li>
+      <li
+        class="w-full p-2 text-center font-bold text-red-600 hover:bg-gray-400"
+      >
+        Report
+      </li>
+      <li
+        class="w-full p-2 text-center font-bold text-red-600 hover:bg-gray-400"
+      >
+        Block
+      </li>
+      <li
+        class="w-full rounded-b-md p-2 text-center font-bold hover:bg-gray-400"
+      >
+        Close
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<ul class="flex justify-between items-center self-stretch border-b-2 m-4">
+  <li>
+    <ul class="flex justify-center items-start gap-2">
+      <!-- Search Bar -->
+      <li
+        class="relative"
+        appClickedOutside
+        (clickedOutside)="clickedOutside('search')"
+      >
+        <mat-icon
+          class="absolute w-auto h-auto z-10 p-2 cursor-pointer"
+          (click)="toggleSearch()"
+          >{{ isSearchOpen ? "close" : "search" }}</mat-icon
+        >
+        <form class="absolute" *ngIf="isSearchOpen">
+          <input
+            class="w-[525px] pl-9 py-2 border-none rounded-md bg-gray-700 placeholder:text-gray-300 focus:outline-none focus:bg-gray-800 focus:text-white"
+            type="text"
+            placeholder="Search posts"
+          />
+        </form>
+      </li>
+
+      <li
+        [className]="
+          isFollowingActive ? 'ml-8 p-2' : 'ml-8 p-2 border-b-4 font-bold'
+        "
+        [style.color]="
+          isFollowingActive ? theme.textPrimary : theme.linkPrimary
+        "
+        [style.borderColor]="
+          isFollowingActive ? theme.textPrimary : theme.linkPrimary
+        "
+        (click)="toggleFollowing('posts')"
+      >
+        Posts
+      </li>
+
+      <li
+        [className]="isFollowingActive ? 'p-2 border-b-4 font-bold' : 'p-2'"
+        [style.color]="
+          isFollowingActive ? theme.linkPrimary : theme.textPrimary
+        "
+        [style.borderColor]="
+          isFollowingActive ? theme.linkPrimary : theme.textPrimary
+        "
+        (click)="toggleFollowing('following')"
+      >
+        Following
+      </li>
+    </ul>
+  </li>
+
+  <!-- View Style -->
+  <li>
+    <ul class="flex justify-center items-start gap-2">
+      <li
+        class="font-bold cursor-pointer"
+        [style.color]="
+          viewType === 'grid' ? theme.textSecondary : theme.textPrimary
+        "
+        (click)="toggleView('list')"
+      >
+        <mat-icon>list</mat-icon>
+      </li>
+      <li
+        class="font-bold cursor-pointer"
+        [style.color]="
+          viewType === 'grid' ? theme.textPrimary : theme.textSecondary
+        "
+        (click)="toggleView('grid')"
+      >
+        <mat-icon>grid_view</mat-icon>
+      </li>
+    </ul>
+  </li>
+</ul>

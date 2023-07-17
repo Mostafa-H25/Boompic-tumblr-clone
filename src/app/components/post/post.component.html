@@ -1,0 +1,456 @@
+<!-- Post -->
+<article #article class="relative w-full flex gap-4 my-4">
+  <!-- User Picture [width > 625px] -->
+  <img
+    class="inline-flex sticky top-20 left-0 w-16 h-16 rounded-md p-auto"
+    src="{{ post.user.profilePic }}"
+    alt="{{ post.user.email }}"
+    *ngIf="articleWidth >= 620"
+  />
+
+  <!-- Post -->
+  <div
+    [className]="
+      articleWidth > 620
+        ? 'w-[540px] relative rounded-sm'
+        : 'w-full relative rounded-sm'
+    "
+    [style.background]="theme.primaryDefault"
+  >
+    <!-- Post Header -->
+    <div
+      class="flex justify-between items-center gap-2 p-4 cursor-pointer hover:bg-gray-400/50"
+    >
+      <div
+        [routerLink]="['/', post.user.email]"
+        class="flex items-center shrink gap-2 my-auto"
+      >
+        <!-- User Picture [width > 625px] -->
+        <img
+          class="min-w-0 max-w-12 min-h-0 max-h-12 rounded-md"
+          src="{{ post.user.profilePic }}"
+          alt="{{ post.user.email }}"
+          *ngIf="articleWidth < 620"
+        />
+        <!-- Username -->
+        <p class="m-0 font-bold" [style.color]="theme.textPrimary">
+          {{ post.user.email }}
+        </p>
+
+        <!-- Follow Button -->
+        <button
+          class="p-0 cursor-pointer hover:border-b"
+          [style.color]="theme.linkPrimary"
+          [style.borderColor]="theme.linkPrimary"
+          *ngIf="
+            !baseUser.following.has(post.user.userId) &&
+            post.user.userId !== baseUser.userId
+          "
+          (click)="follow(post.user.userId)"
+        >
+          Follow
+        </button>
+      </div>
+
+      <!-- More Options -->
+      <li
+        class="relative list-none"
+        [style.color]="theme.textPrimary"
+        appClickedOutside
+        (clickedOutside)="clickedOutside('options')"
+      >
+        <!-- Dropdown Button -->
+        <mat-icon
+          class="rounded-full p-2 w-auto h-auto cursor-pointer hover:bg-gray-600/50"
+          (click)="toggleOptions()"
+          >more_horiz</mat-icon
+        >
+
+        <!-- Dropdown Content -->
+        <ul
+          class="flex flex-col items-center absolute top-16 -left-24 w-52 z-10 rounded-md"
+          [style.boxShadow]="
+            'rgba(50, 50, 93, 0.25) 0px 30px 60px -12px, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px'
+          "
+          [style.background]="theme.primaryDefault"
+          *ngIf="isOptionsOpen"
+        >
+          <li
+            class="w-full rounded-t-md p-2 text-center font-bold hover:bg-gray-400"
+          >
+            {{ post.createdAt }}
+          </li>
+          <li class="w-full p-2 text-center font-bold hover:bg-gray-400">
+            Community Label
+          </li>
+          <li
+            class="flex justify-center items-center gap-2 w-full p-2 text-center font-bold hover:bg-gray-400 active:text-green-800 active:bg-green-400/50"
+            (click)="copyLink(post.postId)"
+          >
+            <span>Copy Link</span>
+            <mat-icon>content_copy</mat-icon>
+          </li>
+          <li
+            class="w-full p-2 text-center font-bold hover:bg-gray-400"
+            *ngIf="post.user.userId !== baseUser.userId"
+            (click)="follow(post.user.userId)"
+          >
+            {{
+              this.baseUser.following.has(post.user.userId)
+                ? "Unfollow"
+                : "Follow"
+            }}
+          </li>
+          <li class="w-full p-2 text-center font-bold hover:bg-gray-400">
+            Subscribe to Conversation
+          </li>
+          <li class="w-full p-2 text-center font-bold hover:bg-gray-400">
+            Content Settings
+          </li>
+          <li
+            class="w-full p-2 text-center font-bold text-red-600 hover:bg-gray-400"
+          >
+            Report
+          </li>
+          <li
+            class="w-full p-2 text-center font-bold text-red-600 hover:bg-gray-400"
+          >
+            Block
+          </li>
+          <li
+            class="w-full rounded-b-md p-2 text-center font-bold hover:bg-gray-400"
+          >
+            Close
+          </li>
+        </ul>
+      </li>
+    </div>
+
+    <!-- Post Image -->
+    <img
+      [routerLink]="['/dashboard', post.postId]"
+      class="w-full cursor-pointer"
+      src="{{ post.imageUrl }}"
+      alt="{{ post.imageUrl }}"
+    />
+
+    <!-- Post Caption -->
+    <p class="p-4" [style.color]="theme.textPrimary">{{ post.caption }}</p>
+
+    <!-- Tags -->
+    <ul class="flex items-center gap-2 p-4" [style.color]="theme.textPrimary">
+      <li *ngFor="let tag of post.tags">
+        <button>#{{ tag }}</button>
+      </li>
+    </ul>
+    <div class="flex justify-between items-center p-4">
+      <div></div>
+      <div
+        class="flex items-center gap-2"
+        *ngIf="post.user.userId === baseUser.userId"
+      >
+        <mat-icon
+          class="w-auto h-auto text-3xl cursor-pointer"
+          (click)="confirmDelete(post.postId)"
+          >delete</mat-icon
+        >
+        <mat-icon
+          [routerLink]="['/edit', post.postId]"
+          class="w-auto h-auto text-3xl cursor-pointer"
+          >edit</mat-icon
+        >
+      </div>
+    </div>
+
+    <!-- Interaction Tab -->
+    <footer
+      class="flex justify-between items-center p-4"
+      [style.color]="theme.textPrimary"
+    >
+      <!-- No. of Interactions -->
+      <button
+        class="rounded-full border px-4 py-2"
+        *ngIf="!isNotesOpen; else closeNotes"
+        (click)="notesToggle()"
+      >
+        <span>{{ notesTotal }} notes</span>
+      </button>
+
+      <!-- No Interactions -->
+      <ng-template #closeNotes>
+        <button
+          class="flex justify center items-center gap-1 rounded-full px-3 py-2"
+          [style.background]="theme.primaryLighter"
+          (click)="notesToggle()"
+        >
+          <mat-icon class="text-md">close</mat-icon>
+          <span>Close notes</span>
+        </button>
+      </ng-template>
+
+      <!-- Interaction Buttons -->
+      <div class="flex gap-2">
+        <mat-icon class="cursor-pointer">share</mat-icon>
+        <mat-icon class="cursor-pointer">reply</mat-icon>
+        <mat-icon class="cursor-pointer">published_with_changes</mat-icon>
+        <mat-icon class="cursor-pointer" (click)="likePost(post.postId)"
+          >favorite_border</mat-icon
+        >
+      </div>
+    </footer>
+
+    <!-- Interactions Divisions -->
+    <div *ngIf="isNotesOpen" [style.color]="theme.textPrimary">
+      <hr [style.color]="theme.primaryLighter" />
+      <div class="px-4">
+        <!-- Interactions Header -->
+        <header
+          class="flex justify-between items-center p-2 border-b"
+          [style.borderColor]="theme.primaryLighter"
+        >
+          <!-- Interaction Tabs -->
+          <div class="flex gap-2">
+            <p
+              class="m-0 flex justify-center items-center gap-2 p-2 cursor-pointer active:text-sky-600 active:border-b-2 active:border-sky-600"
+              (click)="togglePostInteractions('replies', post)"
+            >
+              <mat-icon>reply</mat-icon>
+              <span>{{ post.replies.size }}</span>
+            </p>
+
+            <p
+              class="m-0 flex justify-center items-center gap-2 p-2 cursor-pointer active:text-green-600 active:border-b-2 active:border-green-600"
+              (click)="togglePostInteractions('reblogs', post)"
+            >
+              <mat-icon>published_with_changes</mat-icon>
+              <span>{{ post.reblogs.size }}</span>
+            </p>
+
+            <p
+              class="m-0 flex justify-center items-center gap-2 p-2 cursor-pointer active:text-red-600 active:border-b-2 active:border-red-600"
+              (click)="togglePostInteractions('likes', post)"
+            >
+              <mat-icon>favorite_border</mat-icon>
+              <span>{{ post.likes.size }}</span>
+            </p>
+          </div>
+
+          <!-- Sorting Dropdown -->
+          <div
+            *ngIf="
+              interactionTitle === 'likes' || interactionTitle === '';
+              else sortingButton
+            "
+          ></div>
+          <ng-template #sortingButton>
+            <div
+              class="relative list-none"
+              [style.color]="theme.textPrimary"
+              appClickedOutside
+              (clickedOutside)="clickedOutside('expandNotesSorting')"
+            >
+              <!-- Sorting Button -->
+              <button
+                class="flex justify-center items-center gap-2 p-2 cursor-pointer"
+                (click)="expandToggle()"
+              >
+                <span>{{ selectedCriteria }}</span>
+                <mat-icon>{{
+                  isExpandNotesSortingOpen ? "expand_less" : "expand_more"
+                }}</mat-icon>
+              </button>
+
+              <!-- Dropdown Content -->
+              <ul
+                class="flex flex-col items-center absolute top-8 right-0 w-44 z-10 rounded-sm"
+                [style.boxShadow]="
+                  'rgba(50, 50, 93, 0.25) 0px 30px 60px -12px, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px'
+                "
+                [style.background]="theme.primaryDefault"
+                *ngIf="isExpandNotesSortingOpen"
+              >
+                <li
+                  class="flex justify-between w-full first:rounded-t-md last:rounded-b-md p-2 text-center font-bold hover:bg-gray-400"
+                  *ngFor="let criteria of criterias"
+                  (click)="selectCriteria(criteria)"
+                >
+                  <span>{{ criteria }}</span>
+                  <mat-icon
+                    class="font-bold"
+                    [style.color]="theme.accentDefault"
+                    *ngIf="selectedCriteria === criteria"
+                    >done</mat-icon
+                  >
+                </li>
+              </ul>
+            </div>
+          </ng-template>
+        </header>
+
+        <!-- Interactions -->
+        <div class="">
+          <div *ngIf="interactionTitle === 'replies'">
+            <!-- Input Reply -->
+            <div class="flex items-center gap-2 my-2">
+              <img
+                class="w-8 h-8 rounded-sm"
+                src="{{ baseUser.profilePic }}"
+                alt="{{ baseUser.profilePic }}"
+              />
+              <form
+                class="flex flex-auto justify-center items-center relative"
+                #replyForm="ngForm"
+                (ngSubmit)="onSubmit(replyForm)"
+              >
+                <input
+                  type="text"
+                  class="hidden"
+                  name="postId"
+                  value="post.postId"
+                  ngModel
+                  #postId="ngModel"
+                />
+                <input
+                  type="text"
+                  class="hidden"
+                  name="baseUserId"
+                  value="{{ baseUser.userId }}"
+                  ngModel
+                  #baseUserId="ngModel"
+                />
+                <input
+                  class="w-full h-full border outline-none rounded-full bg-transparent p-2"
+                  [style.color]="theme.textPrimary"
+                  [style.borderColor]="theme.textPrimary"
+                  type="text"
+                  placeholder="Have something to say?"
+                  name="reply"
+                  ngModel
+                  #reply="ngModel"
+                  required
+                />
+                <button
+                  class="absolute right-2"
+                  type="submit"
+                  [disabled]="replyForm.invalid"
+                >
+                  Reply
+                </button>
+              </form>
+            </div>
+
+            <!-- Replies -->
+            <div *ngIf="replies.length > 0; else noReplies">
+              <app-reply
+                class="py-2 overflow-x-hidden overflow-y-auto"
+                [style.color]="theme.textPrimary"
+                *ngFor="
+                  let reply of replies | sort : 'createdAt' : selectedCriteria
+                "
+                [reply]="reply"
+              ></app-reply>
+            </div>
+
+            <!-- No Replies -->
+            <ng-template #noReplies>
+              <div class="flex flex-col justify-center items-center">
+                <mat-icon>reply</mat-icon>
+                <p class="m-0 px-2 py-4 text-center font-bold">
+                  Be the first to Reply!
+                </p>
+              </div>
+            </ng-template>
+          </div>
+
+          <!-- Reblogs -->
+          <app-reblog
+            *ngIf="interactionTitle === 'reblogs'"
+            [reblogs]="reblogs"
+            [post]="post"
+          ></app-reblog>
+
+          <!-- Likes -->
+          <div *ngIf="interactionTitle === 'likes'">
+            <div class="py-4" *ngIf="post.likes.size > 0; else noLikes">
+              <div
+                class="flex justify-between items-center gap-2 p-2 overflow-y-auto"
+                *ngFor="let like of likes"
+              >
+                <!-- User -->
+                <div class="flex items-start gap-2">
+                  <!-- User Picture -->
+                  <img
+                    class="w-12 h-12 rounded-sm"
+                    src="{{ like.user.profilePic }}"
+                    alt="{{ like.user.profilePic }}"
+                  />
+
+                  <!-- Username -->
+                  <div>
+                    <p class="m-0 font-bold">
+                      {{ like.user.firstName | titlecase }}
+                      {{ like.user.lastName | titlecase }}
+                    </p>
+                    <p class="m-0">{{ like.user.email }}</p>
+                  </div>
+                </div>
+
+                <!-- Follow Button -->
+                <button
+                  class="p-0 cursor-pointer hover:border-b"
+                  [style.color]="theme.linkPrimary"
+                  [style.borderColor]="theme.linkPrimary"
+                  *ngIf="
+                    !this.baseUser.following.has(post.user.userId) &&
+                    post.user.userId !== baseUser.userId
+                  "
+                  (click)="follow(post.user.userId)"
+                >
+                  Follow
+                </button>
+              </div>
+            </div>
+
+            <!-- No Likes -->
+            <ng-template #noLikes>
+              <div class="flex flex-col justify-center items-center">
+                <mat-icon>favorite_border</mat-icon>
+                <p class="m-0 px-2 py-4 text-center font-bold">
+                  Give the first Like!
+                </p>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirm Post Delete Modal -->
+    <div
+      class="absolute top-0 bottom-0 left-0 right-0 flex justify-center items-center z-10 p-4 bg-gray-500/70"
+      *ngIf="postToDelete"
+    >
+      <div>
+        <p class="text-white font-bold text-3xl text-center break-word">
+          Are you sure you want to delete this post {{ postToDelete.postId }}?
+        </p>
+        <div class="flex justify-center items-center gap-4">
+          <button
+            class="py-2 px-4 roounded-sm"
+            [style.background]="theme.primaryDefault"
+            (click)="cancelDeletion()"
+          >
+            Cancel
+          </button>
+          <button
+            class="py-2 px-4 roounded-sm font-bold"
+            [style.background]="theme.accentDefault"
+            (click)="deletePost(postToDelete.postId)"
+          >
+            Confirm
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>

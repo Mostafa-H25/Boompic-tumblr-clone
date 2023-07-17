@@ -1,0 +1,106 @@
+<!-- Side Bar -->
+<section>
+  <!-- Blogs to Follow -->
+  <div class="rounded-lg bg-gray-800">
+    <!-- Title -->
+    <h4 class="m-0 p-4 font-bold">Blogs like this one</h4>
+    <hr />
+
+    <!-- Users -->
+    <div class="py-2" *ngIf="newUsers.length > 0; else noUsers">
+      <a *ngFor="let user of newUsers">
+        <div
+          [routerLink]="['/', user.email]"
+          class="flex justify-between items-center gap-2 py-2 px-4 cursor-pointer hover:bg-gray-400/50"
+          *ngIf="
+            !this.baseUser.following.has(user.userId) &&
+            user.userId !== baseUser.userId
+          "
+        >
+          <div [routerLink]="['/', user.email]" class="flex items-start gap-2">
+            <img
+              class="w-12 h-12 rounded-sm"
+              src="{{ user.profilePic }}"
+              alt="{{ user.firstName | titlecase }} {{
+                user.lastName | titlecase
+              }}"
+            />
+
+            <div>
+              <p class="m-0 font-bold">
+                {{ user.firstName | titlecase }}
+                {{ user.lastName | titlecase }}
+              </p>
+              <p class="m-0">Account Bio</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4">
+            <!-- Follow Button -->
+            <button
+              class="p-0 hover:border-b"
+              [style.color]="theme.linkPrimary"
+              [style.borderColor]="theme.linkPrimary"
+              (click)="follow(user.userId)"
+            >
+              Follow
+            </button>
+            <button (click)="removePublisher(user.userId)">
+              <mat-icon>highlight_off</mat-icon>
+            </button>
+          </div>
+        </div>
+      </a>
+    </div>
+    <ng-template #noUsers>
+      <div class="flex justify-center items-center h-32">
+        <p class="px-2 py-4 text-center font-bold">No available blogs.</p>
+      </div>
+    </ng-template>
+    <hr />
+
+    <!-- Show More -->
+    <button
+      class="block mx-auto px-2 py-4 text-center font-bold"
+      (click)="changeBlogs(newUsers)"
+    >
+      Show More Blogs
+    </button>
+  </div>
+
+  <!-- Photo Grid -->
+  <div>
+    <!-- Title -->
+    <h4 class="m-0 px-2 py-4 font-bold">More Like This</h4>
+    <hr class="py-2" />
+
+    <!-- Photo Grid -->
+    <div class="grid grid-cols-3 gap-1">
+      <img
+        class="rounded-tl-lg"
+        src="/assets/images/posts/post.bmp"
+        alt="post image"
+      />
+      <img src="/assets/images/posts/post.bmp" alt="post image" />
+      <img
+        class="rounded-tr-lg"
+        src="/assets/images/posts/post.bmp"
+        alt="post image"
+      />
+      <img src="/assets/images/posts/post.bmp" alt="post image" />
+      <img src="/assets/images/posts/post.bmp" alt="post image" />
+      <img src="/assets/images/posts/post.bmp" alt="post image" />
+      <img
+        class="rounded-bl-lg"
+        src="/assets/images/posts/post.bmp"
+        alt="post image"
+      />
+      <img src="/assets/images/posts/post.bmp" alt="post image" />
+      <img
+        class="rounded-br-lg"
+        src="/assets/images/posts/post.bmp"
+        alt="post image"
+      />
+    </div>
+  </div>
+</section>

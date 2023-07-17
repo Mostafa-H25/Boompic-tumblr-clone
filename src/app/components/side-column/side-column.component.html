@@ -1,0 +1,160 @@
+<section
+  class="relative flex flex-col p-4 h-full"
+  [style.color]="theme.textPrimary"
+>
+  <div
+    class="rounded-sm"
+    [style.background]="
+      baseUser.isAuthenticated ? 'none' : theme.primaryDefault
+    "
+  >
+    <!-- Logged in User [Random Blogs Title] -->
+    <h4
+      class="m-0 p-4 font-bold"
+      *ngIf="baseUser.isAuthenticated; else anonymousUserTitle"
+    >
+      Check out these blogs
+    </h4>
+
+    <!-- Anonymous User [Random Blogs Title] -->
+    <ng-template #anonymousUserTitle>
+      <h4 class="m-0 px-2 py-4 font-bold">Trending Blogs</h4>
+    </ng-template>
+    <hr [style.color]="theme.primaryLighter" />
+
+    <!-- Random Blogs -->
+    <div class="py-4" *ngIf="newUsers.length > 0; else noUsers">
+      <div *ngFor="let user of newUsers">
+        <div
+          [routerLink]="['/', user.email]"
+          class="flex justify-between items-center gap-2 py-2 px-4 cursor-pointer hover:bg-gray-400/50"
+          *ngIf="
+            !this.baseUser.following.has(user.userId) &&
+            user.userId !== baseUser.userId
+          "
+        >
+          <!-- User Data -->
+          <div [routerLink]="['/', user.email]" class="flex items-start gap-2">
+            <!-- User Picture -->
+            <img
+              class="max-w-none w-12 h-12 rounded-md"
+              src="{{ user.profilePic }}"
+              alt="{{ user.profilePic }}"
+            />
+
+            <!-- Username -->
+            <div>
+              <p class="m-0 font-bold">
+                {{ user.firstName | titlecase }} {{ user.lastName | titlecase }}
+              </p>
+              <p
+                class="m-0 text-sm break-all"
+                [style.color]="theme.textSecondary"
+              >
+                {{ user.email }}
+              </p>
+            </div>
+          </div>
+
+          <!-- User Buttons -->
+          <div class="flex items-center gap-1">
+            <!-- Follow Button -->
+            <button
+              class="p-0 hover:border-b"
+              [style.color]="theme.linkPrimary"
+              [style.borderColor]="theme.linkPrimary"
+              (click)="follow(user.userId)"
+            >
+              Follow
+            </button>
+
+            <!-- remove -->
+            <button (click)="removePublisher(user.userId)">
+              <mat-icon class="text-sm leading-8">close</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Users -->
+    <ng-template #noUsers>
+      <div class="flex justify-center items-center h-32">
+        <p class="px-2 py-4 text-center font-bold">No available blogs.</p>
+      </div>
+    </ng-template>
+
+    <!-- Anonymous User [Show More Blogs Button] -->
+    <div *ngIf="!baseUser.isAuthenticated">
+      <hr [style.color]="theme.primaryLighter" />
+      <button
+        class="block my-4 mx-auto py-0 text-center font-bold hover:border-b"
+        [style.color]="theme.linkPrimary"
+        [style.borderColor]="theme.linkPrimary"
+        (click)="changeBlogs(newUsers)"
+      >
+        Show More Blogs
+      </button>
+    </div>
+  </div>
+
+  <!-- Logged In user -->
+  <div *ngIf="baseUser.isAuthenticated; else anonymousUserSignUp">
+    <button
+      class="block my-4 mx-4 py-0 text-center font-bold hover:border-b"
+      routerLink="/explore"
+      [style.color]="theme.linkPrimary"
+      [style.borderColor]="theme.linkPrimary"
+    >
+      Explore all of Tumblr
+    </button>
+
+    <!-- Random Post -->
+    <p class="text-lg font-bold">Radar</p>
+    <hr [style.color]="theme.primaryLighter" />
+    <app-post [post]="randomPost"></app-post>
+  </div>
+
+  <!-- Sign Up -->
+  <ng-template #anonymousUserSignUp>
+    <div
+      class="flex flex-col justify-center items-center my-4 rounded-md p-4 bg-orange-400"
+    >
+      <p class="m-0 text-white text-lg font-bold">Curate your own Dashboard</p>
+      <p class="m-0 text-white text-md">You'll never be bored again.</p>
+      <button
+        class="mt-4 rounded-sm py-2 px-8 bg-white text-orange-400 text-lg"
+      >
+        Sign Me Up
+      </button>
+    </div>
+  </ng-template>
+
+  <!-- Anonymous User [Sponsored Ads] -->
+  <div class="flex-auto relative" *ngIf="!baseUser.isAuthenticated">
+    <!-- Change Palette Button -->
+    <button
+      class="flex items-center gap-2 w-full my-2 rounded-sm p-3 hover:bg-gray-400/50"
+      [style.background]="theme.primaryDefault"
+      (click)="toggleTheme()"
+    >
+      <mat-icon>palette</mat-icon>
+      <p class="m-0 text-lg">Change Palette</p>
+    </button>
+
+    <!-- Sponsored Ads -->
+    <div class="sticky top-20">
+      <h3 class="p-2 font-bold">Sponsored</h3>
+      <hr [style.color]="theme.primaryLighter" />
+      <p class="p-2">Wanna fo ad-free?</p>
+    </div>
+
+    <!-- Credentials -->
+    <ul class="sticky top-[95%] flex gap-4 p-4">
+      <li class="hover:border-b">About</li>
+      <li class="hover:border-b">Apps</li>
+      <li class="hover:border-b">Legal</li>
+      <li class="hover:border-b">Privacy</li>
+    </ul>
+  </div>
+</section>

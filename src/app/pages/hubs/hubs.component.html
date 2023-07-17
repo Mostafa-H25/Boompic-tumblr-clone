@@ -1,0 +1,24 @@
+<!-- Content -->
+<main
+  class="flex max-w-[990px] justify-center items-stretch min-h-screen mt-8 mx-auto"
+  *ngIf="baseUser.isAuthenticated"
+>
+  <!-- Logged In User -->
+  <div class="shrink basis-[625px] min-h-screen">
+    <main class="flex flex-col p-4">
+      <!-- Dashboard Header -->
+      <app-dashboard-header></app-dashboard-header>
+
+      <!-- Posts -->
+      <app-post
+        *ngFor="let post of posts | sort : 'createdAt'"
+        [post]="post"
+      ></app-post>
+    </main>
+  </div>
+
+  <!-- Side Bar -->
+  <app-side-column
+    class="hidden lg:inline-flex w-[315px] min-h-screen"
+  ></app-side-column>
+</main>

@@ -1,0 +1,884 @@
+<!-- Navigation Bar [Screen Width > 1024 px] -->
+<nav
+  class="hidden lg:block fixed top-0 z-20 w-screen h-12 mx-auto border-b border-white/20 py-1 px-5"
+  [style.backgroundColor]="theme.background"
+  [style.color]="'active' ? theme.textPrimary : theme.textSecondary"
+>
+  <ul class="flex justify-around items-center">
+    <!-- Left Side -->
+    <li>
+      <ul class="flex items-center">
+        <!-- Logo -->
+        <li routerLink="/dashboard" class="px-2">
+          <img
+            class="w-8 h-8"
+            src="/assets/images/backgroundIcons/logo.bmp"
+            alt="logo"
+          />
+        </li>
+
+        <!-- Search -->
+        <li>
+          <form
+            class="relative"
+            #searchForm="ngForm"
+            (keyup.enter)="onSubmit(searchForm)"
+          >
+            <mat-icon class="absolute top-2 bottom-2 left-1">search</mat-icon>
+            <input
+              class="w-[448px] py-2 pl-9 border-none rounded-sm placeholder:text-gray-300 focus:outline-none focus:bg-gray-400/50"
+              [style.background]="theme.primaryDefault"
+              type="text"
+              placeholder="Search Boompic"
+              name="search"
+              ngModel
+              #search="ngModel"
+            />
+          </form>
+        </li>
+      </ul>
+    </li>
+
+    <!-- Right Side -->
+    <li>
+      <!-- Logged In User Buttons -->
+      <ul
+        class="flex items-center gap-2"
+        *ngIf="baseUser.isAuthenticated; else anonymousUser"
+      >
+        <!-- Home -->
+        <li routerLink="/dashboard" class="w-8 h-8 mx-1 p-1 cursor-pointer">
+          <mat-icon>home</mat-icon>
+        </li>
+
+        <!-- Explore -->
+        <li routerLink="/explore" class="w-8 h-8 mx-1 p-1 cursor-pointer">
+          <mat-icon>explore</mat-icon>
+        </li>
+
+        <!-- Shop Dropdown -->
+        <li
+          class="relative w-8 h-8 mx-1 p-1 cursor-pointer"
+          appClickedOutside
+          (clickedOutside)="clickedOutside('shop')"
+        >
+          <!-- Dropdown Button -->
+          <mat-icon (click)="toggleShop()">storefront</mat-icon>
+
+          <!-- Dropdown Content -->
+          <div
+            class="absolute top-12 -left-48 z-20 w-96 h-[620px] overflow-y-auto rounded-lg p-4 cursor-default"
+            [style.boxShadow]="
+              'rgba(50, 50, 93, 0.25) 0px 30px 60px -12px, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px'
+            "
+            [style.backgroundColor]="theme.primaryDefault"
+            *ngIf="isShopOpen"
+          >
+            <!-- Title -->
+            <p class="font-bold">BoompicMart</p>
+
+            <!-- Filter Tab -->
+            <ul class="flex justify-start items-center gap-2 py-4">
+              <li
+                class="border-[1px] border-gray-400 rounded-full py-2 px-4 cursor-pointer hover:bg-slate-500"
+              >
+                All
+              </li>
+
+              <li
+                class="border-[1px] border-gray-400 rounded-full py-2 px-4 cursor-pointer hover:bg-slate-500"
+              >
+                Merch
+              </li>
+
+              <li
+                class="border-[1px] border-gray-400 rounded-full py-2 px-4 cursor-pointer hover:bg-slate-500"
+              >
+                Gifts
+              </li>
+
+              <li
+                class="border-[1px] border-gray-400 rounded-full py-2 px-4 cursor-pointer hover:bg-slate-500"
+              >
+                Badges
+              </li>
+            </ul>
+
+            <!-- Slider Position -->
+            <app-slider [slides]="slides"></app-slider>
+
+            <!-- Market Items List -->
+            <ul>
+              <li class="flex justify-center items-center gap-4">
+                <!-- Market Item Picture -->
+                <img
+                  class="w-24 h-24 rounded-2xl p-2"
+                  src="/assets/images/posts/post.bmp"
+                  alt="market item"
+                />
+                <div>
+                  <!-- Market Item Title -->
+                  <p class="font-bold">Important Blue Internet Checkmarks</p>
+
+                  <!-- Market Item Description -->
+                  <p>You can never be too important for the internet.</p>
+
+                  <!-- Market Item Button -->
+                  <div class="flex justify-start items-center gap-2 pb-2">
+                    <button
+                      class="rounded-full py-2 px-4 font-bold"
+                      [style.backgroundColor]="theme.primaryLighter"
+                    >
+                      Shop
+                    </button>
+                    <button
+                      class="rounded-full p-2 font-bold leading-3"
+                      [style.backgroundColor]="theme.primaryLighter"
+                    >
+                      <mat-icon>redeem</mat-icon>
+                    </button>
+                  </div>
+                  <hr />
+                </div>
+              </li>
+            </ul>
+          </div>
+        </li>
+
+        <!-- Inbox -->
+        <li class="w-8 h-8 mx-1 p-1 cursor-pointer">
+          <mat-icon>inbox</mat-icon>
+        </li>
+
+        <!-- Chat -->
+        <li class="w-8 h-8 mx-1 p-1 cursor-pointer">
+          <mat-icon>chat</mat-icon>
+        </li>
+
+        <!-- Notification Dropdown -->
+        <li
+          class="relative w-8 h-8 mx-1 p-1 cursor-pointer"
+          appClickedOutside
+          (clickedOutside)="clickedOutside('notification')"
+        >
+          <!-- Dropdown Button -->
+          <mat-icon (click)="toggleNotification()">bolt</mat-icon>
+
+          <!-- Dropdown Content -->
+          <div
+            class="absolute top-16 -left-48 z-20 w-96 h max-h-[620px] overflow-y-auto rounded-lg"
+            [style.boxShadow]="
+              'rgba(50, 50, 93, 0.25) 0px 30px 60px -12px, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px'
+            "
+            [style.backgroundColor]="theme.primaryDefault"
+            *ngIf="isNotificationOpen"
+          >
+            <p class="m-0 p-4 font-bold">
+              {{ "user.firstName" }} {{ "user.lastName" }}
+            </p>
+            <hr />
+
+            <!-- Filter Tab -->
+            <ul class="flex justify-around items-center w-full py-2">
+              <li class="py-2 px-auto font-bold">
+                <button>All</button>
+              </li>
+              <li class="py-2 px-auto font-bold">
+                <button>Mentions</button>
+              </li>
+              <li class="py-2 px-auto font-bold">
+                <button>Reblogs</button>
+              </li>
+              <li class="py-2 px-auto font-bold">
+                <button>Replies</button>
+              </li>
+            </ul>
+
+            <!-- No Notifications -->
+            <ul class="bg-gray-600 p-4">
+              <li class="text-center">
+                <mat-icon>bolt</mat-icon>
+                <p>
+                  Check out this tab when you make a post to see Likes, Reblogs,
+                  and new followers.
+                </p>
+              </li>
+            </ul>
+          </div>
+        </li>
+
+        <!-- Account Dropdown -->
+        <li
+          class="relative w-8 h-8 mx-1 p-1"
+          appClickedOutside
+          (clickedOutside)="clickedOutside('account')"
+        >
+          <!-- Dropdown Button -->
+          <mat-icon class="cursor-pointer" (click)="toggleAccount()"
+            >person</mat-icon
+          >
+
+          <!-- Dropdown Content -->
+          <div
+            class="absolute top-12 -left-28 z-20 w-60 rounded-lg"
+            [style.boxShadow]="
+              'rgba(50, 50, 93, 0.25) 0px 30px 60px -12px, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px'
+            "
+            [style.background]="theme.primaryDefault"
+            *ngIf="isAccountOpen"
+          >
+            <div
+              class="flex justify-between p-2"
+              [style.background]="theme.primaryLighter"
+            >
+              <p class="m-0">Account</p>
+              <p class="m-0 cursor-pointer" (click)="logOut()">Log out</p>
+            </div>
+
+            <ul>
+              <li class="p-2 px-auto cursor-pointer hover:bg-gray-400/50">
+                <div class="flex justify-between items-center">
+                  <div class="flex justify-start items-center gap-2">
+                    <mat-icon>favorite</mat-icon>
+                    <span>Likes</span>
+                  </div>
+                  <span>{{ baseUserLikedPosts.length }}</span>
+                </div>
+              </li>
+
+              <li class="p-2 px-auto cursor-pointer hover:bg-gray-400/50">
+                <div class="flex justify-between items-center">
+                  <div class="flex justify-start items-center gap-2">
+                    <mat-icon>people</mat-icon>
+                    <span>Followings</span>
+                  </div>
+                  <span>{{ baseUser.following.size }}</span>
+                </div>
+              </li>
+
+              <li class="p-2 px-auto cursor-pointer hover:bg-gray-400/50">
+                <div class="flex justify-start items-center gap-2">
+                  <mat-icon>settings</mat-icon>
+                  <span>Settings</span>
+                </div>
+              </li>
+
+              <li class="p-2 px-auto cursor-pointer hover:bg-gray-400/50">
+                <div class="flex justify-start items-center gap-2">
+                  <mat-icon>public</mat-icon>
+                  <span>Domains</span>
+                </div>
+              </li>
+
+              <li class="p-2 px-auto cursor-pointer hover:bg-gray-400/50">
+                <div class="flex justify-start items-center gap-2">
+                  <mat-icon>hotel_class</mat-icon>
+                  <span>Go Ad-Free</span>
+                </div>
+              </li>
+
+              <li class="p-2 px-auto cursor-pointer hover:bg-gray-400/50">
+                <div class="flex justify-start items-center gap-2">
+                  <mat-icon>add_shopping_cart</mat-icon>
+                  <span>Payment & Purchases</span>
+                </div>
+              </li>
+
+              <li class="p-2 px-auto cursor-pointer hover:bg-gray-400/50">
+                <div class="flex justify-start items-center gap-2">
+                  <mat-icon>add_shopping_cart</mat-icon>
+                  <span>Gifts</span>
+                </div>
+              </li>
+
+              <li class="p-2 px-auto cursor-pointer hover:bg-gray-400/50">
+                <div class="flex justify-start items-center gap-2">
+                  <mat-icon>star_border</mat-icon>
+                  <span>What's New</span>
+                </div>
+              </li>
+
+              <li class="p-2 px-auto cursor-pointer hover:bg-gray-400/50">
+                <div class="flex justify-start items-center gap-2">
+                  <mat-icon>help</mat-icon>
+                  <span>Help</span>
+                </div>
+              </li>
+
+              <li class="p-2 px-auto cursor-pointer hover:bg-gray-400/50">
+                <div class="flex justify-start items-center gap-2">
+                  <mat-icon>keyboard</mat-icon>
+                  <span>Keyboard Shortcuts</span>
+                </div>
+              </li>
+
+              <!-- Change Theme Button -->
+              <li class="p-2 px-auto cursor-pointer hover:bg-gray-400/50">
+                <button
+                  class="flex justify-start items-center gap-2"
+                  (click)="toggleTheme()"
+                >
+                  <mat-icon>palette</mat-icon>
+                  <span>Change Palette</span>
+                </button>
+              </li>
+            </ul>
+
+            <div
+              class="flex justify-between p-2"
+              [style.background]="theme.primaryLighter"
+            >
+              <p class="m-0">Blogs</p>
+              <button class="cursor-pointer">+ New</button>
+            </div>
+
+            <div class="flex justify-between items-center">
+              <!-- User Tab -->
+              <div class="flex justify-start items-center gap-2 p-2">
+                <!-- User Picture -->
+                <img
+                  class="w-8"
+                  src="{{ baseUser.profilePic }}"
+                  alt="{{ baseUser.profilePic }}"
+                />
+                <!-- Username & Bio -->
+                <div>
+                  <p class="m-0">
+                    {{ baseUser.firstName }} {{ baseUser.lastName }}
+                  </p>
+                  <p class="m-0">{{ baseUser.email }}</p>
+                </div>
+              </div>
+
+              <!-- Show More Button -->
+              <mat-icon (click)="toggleAccountUser()">
+                {{ isAccountUserOpen ? "expand_less" : "expand_more" }}
+              </mat-icon>
+            </div>
+
+            <!-- Dropdown Content -->
+            <ul *ngIf="isAccountUserOpen">
+              <li class="p-2 px-auto hover:bg-gray-400/50">
+                <div class="flex justify-between items-center">
+                  <span>Posts</span>
+                  <span>{{ baseUserPosts.length }}</span>
+                </div>
+              </li>
+
+              <li class="p-2 px-auto hover:bg-gray-400/50">
+                <div class="flex justify-between items-center">
+                  <span>Followers</span>
+                  <span>{{ baseUser.followers.size }}</span>
+                </div>
+              </li>
+
+              <li class="p-2 px-auto hover:bg-gray-400/50">
+                <div class="flex justify-start items-center gap-2">
+                  <span>Activity</span>
+                </div>
+              </li>
+
+              <li class="p-2 px-auto hover:bg-gray-400/50">
+                <div class="flex justify-start items-center gap-2">
+                  <span>Drafts</span>
+                </div>
+              </li>
+
+              <li class="p-2 px-auto hover:bg-gray-400/50">
+                <div class="flex justify-start items-center gap-2">
+                  <span>Queue</span>
+                </div>
+              </li>
+
+              <li class="p-2 px-auto hover:bg-gray-400/50">
+                <div class="flex justify-start items-center gap-2">
+                  <span>TumblerBlaze</span>
+                </div>
+              </li>
+
+              <li class="p-2 px-auto hover:bg-gray-400/50">
+                <div class="flex justify-start items-center gap-2">
+                  <span>Blog Settings</span>
+                </div>
+              </li>
+
+              <li class="p-2 px-auto hover:bg-gray-400/50">
+                <div class="flex justify-start items-center gap-2">
+                  <span>Mass Post Editor</span>
+                </div>
+              </li>
+            </ul>
+
+            <!-- Credentials -->
+            <ul
+              class="flex gap-4 p-2"
+              [style.background]="theme.primaryLighter"
+            >
+              <li class="hover:border-b">About</li>
+              <li class="hover:border-b">Apps</li>
+              <li class="hover:border-b">Legal</li>
+              <li class="hover:border-b">Privacy</li>
+            </ul>
+          </div>
+        </li>
+
+        <!-- Create new Post -->
+        <li
+          routerLink="/new"
+          class="box-content mx-1 rounded-sm py-1 px-3 leading-3 cursor-pointer"
+          [style.background]="theme.accentDefault"
+          [style.color]="theme.background"
+        >
+          <mat-icon>create</mat-icon>
+        </li>
+      </ul>
+
+      <!-- Anonymous User [Log In Button] -->
+      <ng-template #anonymousUser>
+        <ul>
+          <!-- Log in -->
+          <li
+            class="border-none rounded-sm bg-green-500 py-2 px-5 font-bold"
+            [style.color]="theme.background"
+          >
+            <button (click)="toggleLogInModal()">Log in</button>
+          </li>
+        </ul>
+      </ng-template>
+    </li>
+  </ul>
+</nav>
+
+<!-- Navigation Bar [Screen Width < 1024 px] -->
+<nav
+  class="lg:hidden block fixed top-0 z-20 w-screen h-12 mx-auto border-b border-white/20 py-2 px-4"
+  [style.background]="theme.background"
+  [style.color]="'active' ? theme.textPrimary : theme.textSecondary"
+>
+  <ul class="flex justify-between items-center gap-3">
+    <li (click)="toggleMenu()">
+      <mat-icon class="leading-tight cursor-pointer">{{
+        isMenuOpen ? "close" : "menu"
+      }}</mat-icon>
+    </li>
+
+    <li class="cursor-pointer">
+      <ng-template *ngIf="'search is on'">
+        <form
+          class="w-fill z-20"
+          #searchForm="ngForm"
+          (ngSubmit)="onSubmit(searchForm)"
+        >
+          <input
+            class="py-1 pl-4 w-full border-none rounded-2xl placeholder:text-gray-300 focus:outline-none focus:bg-gray-800 focus:text-white"
+            [style.background]="theme.primaryLighter"
+            type="text"
+            placeholder="Search Boompic"
+            ngModel
+            #search="ngModel"
+          />
+        </form>
+      </ng-template>
+
+      <button>
+        <img
+          class="mx-auto w-8 h-8"
+          src="/assets/images/backgroundIcons/logo.bmp"
+          alt="logo"
+        />
+      </button>
+    </li>
+
+    <li>
+      <mat-icon class="leading-tight cursor-pointer">search</mat-icon>
+    </li>
+  </ul>
+</nav>
+
+<!-- Side Menu -->
+<section
+  class="flex flex-col justify-between fixed top-12 bottom-0 left-0 w-96 z-30 py-2"
+  [style.backgroundColor]="theme.background"
+  [style.color]="'active' ? theme.textPrimary : theme.textSecondary"
+  *ngIf="isMenuOpen"
+>
+  <!-- Logged In User Side Menu -->
+  <ul class="w-full" *ngIf="baseUser.isAuthenticated; else anonymousUser">
+    <!-- Home -->
+    <li
+      routerLink="/dashboard"
+      class="flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-400/20"
+    >
+      <mat-icon>home</mat-icon>
+      <span>Home</span>
+    </li>
+
+    <!-- Explore -->
+    <li
+      routerLink="/explore"
+      class="flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-400/20"
+    >
+      <mat-icon>explore</mat-icon>
+      <span>Explore</span>
+    </li>
+
+    <!-- Shop Dropdown -->
+    <li class="flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-400/20">
+      <mat-icon>storefront</mat-icon>
+      <span>BoompicMart</span>
+    </li>
+
+    <!-- Inbox -->
+    <li class="flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-400/20">
+      <mat-icon>inbox</mat-icon>
+      <span>Inbox</span>
+    </li>
+
+    <!-- Chat -->
+    <li class="flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-400/20">
+      <mat-icon>chat</mat-icon>
+      <span>messages</span>
+    </li>
+
+    <!-- Notification -->
+    <li class="flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-400/20">
+      <mat-icon>bolt</mat-icon>
+      <span>Activity</span>
+    </li>
+
+    <!-- Settings -->
+    <li>
+      <!-- Dropdown Button -->
+      <div
+        class="flex justify-between items-center p-2 cursor-pointer hover:bg-gray-400/20"
+        (click)="toggleSettings()"
+      >
+        <div class="flex items-center gap-2">
+          <mat-icon>settings</mat-icon>
+          <span>Settings</span>
+        </div>
+        <mat-icon>{{
+          isSettingsOpen ? "expand_less" : "expand_more"
+        }}</mat-icon>
+      </div>
+
+      <!-- Dropdown Content -->
+      <ul *ngIf="isSettingsOpen">
+        <hr />
+        <li class="py-2 px-4 cursor-pointer hover:bg-gray-400/20">Account</li>
+        <li class="py-2 px-4 cursor-pointer hover:bg-gray-400/20">Dashboard</li>
+        <li class="py-2 px-4 cursor-pointer hover:bg-gray-400/20">
+          Notifications
+        </li>
+        <li class="py-2 px-4 cursor-pointer hover:bg-gray-400/20">Domains</li>
+        <li class="py-2 px-4 cursor-pointer hover:bg-gray-400/20">
+          Ad-Dree Browsing
+        </li>
+        <li class="py-2 px-4 cursor-pointer hover:bg-gray-400/20">
+          Payment & Purchases
+        </li>
+        <li class="py-2 px-4 cursor-pointer hover:bg-gray-400/20">Apps</li>
+        <li class="py-2 px-4 cursor-pointer hover:bg-gray-400/20">Privacy</li>
+        <li class="py-2 px-4 cursor-pointer hover:bg-gray-400/20">Labs</li>
+        <li class="py-2 px-4 cursor-pointer hover:bg-gray-400/20">Gifts</li>
+        <!-- Change Theme Button -->
+        <li class="py-2 px-4 cursor-pointer hover:bg-gray-400/20">
+          <button
+            class="flex justify-start items-center gap-2"
+            (click)="toggleTheme()"
+          >
+            Change Palette
+          </button>
+        </li>
+      </ul>
+    </li>
+
+    <!-- Account -->
+    <li>
+      <!-- Dropdown Button -->
+      <div
+        class="flex justify-between items-center p-2 cursor-pointer hover:bg-gray-400/20"
+        (click)="toggleAccount()"
+      >
+        <div class="flex items-center gap-2">
+          <mat-icon>person</mat-icon>
+          <span>Account</span>
+        </div>
+        <mat-icon>{{ isAccountOpen ? "expand_less" : "expand_more" }}</mat-icon>
+      </div>
+
+      <!-- Dropdown Content -->
+      <ul *ngIf="isAccountOpen">
+        <hr />
+        <li class="py-2 px-4 cursor-pointer hover:bg-gray-400/20">
+          <div class="flex justify-between items-center">
+            <span>Likes</span>
+            <span>{{ baseUserLikedPosts.length }}</span>
+          </div>
+        </li>
+        <li class="py-2 px-4 cursor-pointer hover:bg-gray-400/20">
+          <div class="flex justify-between items-center">
+            <span>Followings</span>
+            <span>{{ baseUser.following.size }}</span>
+          </div>
+        </li>
+        <li class="py-2 px-4 cursor-pointer hover:bg-gray-400/20">
+          What's New
+        </li>
+        <li class="py-2 px-4 cursor-pointer hover:bg-gray-400/20">Help</li>
+        <li
+          class="py-2 px-4 cursor-pointer hover:bg-gray-400/20"
+          (click)="logOut()"
+        >
+          Log out
+        </li>
+        <li class="py-2 px-4">
+          <div class="flex justify-between">
+            <p class="m-0">Blogs</p>
+            <button class="cursor-pointer">+ New</button>
+          </div>
+        </li>
+        <hr />
+
+        <li>
+          <div
+            class="flex justify-between items-center py-2 px-2 cursor-pointer hover:bg-gray-400/20"
+          >
+            <!-- User Tab -->
+            <div class="flex justify-start items-center gap-2 p-2">
+              <!-- User Picture -->
+              <img
+                class="w-8"
+                src="{{ baseUser.profilePic }}"
+                alt="{{ baseUser.profilePic }}"
+              />
+              <!-- Username & Bio -->
+              <div>
+                <p class="m-0">
+                  {{ baseUser.firstName }} {{ baseUser.lastName }}
+                </p>
+                <p class="m-0">{{ baseUser.email }}</p>
+              </div>
+            </div>
+
+            <!-- Show More Button -->
+            <mat-icon (click)="toggleAccountUser()">
+              {{ isAccountUserOpen ? "expand_less" : "expand_more" }}
+            </mat-icon>
+          </div>
+
+          <!-- Dropdown Content -->
+          <ul *ngIf="isAccountUserOpen">
+            <li class="py-2 px-4 cursor-pointer hover:bg-gray-400/20">
+              <div class="flex justify-between items-center">
+                <span>Posts</span>
+                <span>{{ baseUserPosts.length }}</span>
+              </div>
+            </li>
+            <li class="py-2 px-4 cursor-pointer hover:bg-gray-400/20">
+              <div class="flex justify-between items-center">
+                <span>Followers</span>
+                <span>{{ baseUser.followers.size }}</span>
+              </div>
+            </li>
+            <li class="py-2 px-4 cursor-pointer hover:bg-gray-400/20">
+              Activity
+            </li>
+            <li class="py-2 px-4 cursor-pointer hover:bg-gray-400/20">
+              Drafts
+            </li>
+            <li class="py-2 px-4 cursor-pointer hover:bg-gray-400/20">Queue</li>
+            <li class="py-2 px-4 cursor-pointer hover:bg-gray-400/20">
+              Boompic Blaze
+            </li>
+            <li class="py-2 px-4 cursor-pointer hover:bg-gray-400/20">
+              Blog Setting
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <!-- Domain -->
+    <li class="flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-400/20">
+      <mat-icon>public</mat-icon>
+      <span>Get a Domain</span>
+    </li>
+
+    <!-- Ad-Free -->
+    <li class="flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-400/20">
+      <mat-icon>hotel_class</mat-icon>
+      <span>Go Ad-Free</span>
+    </li>
+  </ul>
+
+  <!-- Anonymous User Side Menu -->
+  <ng-template #anonymousUserSideMenu>
+    <ul class="w-full p-2">
+      <li
+        class="mb-4 border-none rounded-sm bg-green-500 px-5 py-2 font-bold text-center"
+        (click)="toggleLogInModal()"
+      >
+        Log in
+      </li>
+      <li
+        class="mb-4 border-none rounded-sm bg-sky-500 px-5 py-2 font-bold text-center"
+        (click)="toggleLogInModal()"
+      >
+        Sign Up
+      </li>
+
+      <li class="flex items-center gap-2 hover:bg-gray-400/50">
+        <mat-icon>help</mat-icon>
+        <p class="m-0">Help</p>
+      </li>
+      <li>
+        <button
+          class="flex items-center gap-2 hover:bg-gray-400/50"
+          (click)="toggleTheme()"
+        >
+          <mat-icon>palette</mat-icon>
+          <p class="m-0">Change Palettes</p>
+        </button>
+      </li>
+    </ul>
+  </ng-template>
+
+  <div>
+    <!-- Credentials -->
+    <ul class="flex gap-4 p-2">
+      <li><a href="#">About</a></li>
+      <li><a href="#">Apps</a></li>
+      <li><a href="#">Legal</a></li>
+      <li><a href="#">Privacy</a></li>
+    </ul>
+
+    <!-- Create new Post -->
+    <div *ngIf="baseUser.isAuthenticated">
+      <hr class="my-2" />
+      <button
+        routerLink="/new"
+        class="flex justify-center items-center w-4/5 my-2 mx-auto rounded-full py-2 px-4 leading-3 font-bold cursor-pointer"
+        [style.background]="theme.accentDefault"
+        [style.color]="theme.background"
+      >
+        <mat-icon>create</mat-icon>
+        <span>Create</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Sign Up / Log In -->
+<section
+  class="fixed top-0 bottom-0 right-0 left-0 m-0 flex justify-center items-center w-screen h-screen z-20"
+  *ngIf="logInModal"
+>
+  <div class="fixed w-full h-full -z-10 bg-gray-600/50"></div>
+  <article class="w-[600px] h-[720px] rounded-md">
+    <img
+      class="w-full h-72 object-cover rounded-t-md"
+      src="/assets/images/cover/frog.jpg"
+      alt="cover photo"
+    />
+
+    <div [ngSwitch]="continueModal">
+      <div
+        class="flex flex-col justify-center items-center h-[440px] rounded-b-md p-4 bg-violet-500"
+        *ngSwitchCase="'email'"
+      >
+        <p class="text-3xl font-bold">boompic</p>
+        <div class="flex flex-col items-center">
+          <p class="m-0 text-lg font-bold">
+            Enter your email to log in or register:
+          </p>
+          <input
+            class="w-96 py-2 px-4 rounded-md bg-gray-200/20 focus:border-gray-100 focus:border-2 focus:outline-none"
+            type="email"
+            name="email"
+            id="email"
+            placeholder="Email"
+            [(ngModel)]="email"
+            required
+          />
+          <button
+            class="flex justify-center items-center gap-2 m-2 rounded-xl py-2 px-12 bg-gray-200"
+            (click)="continue('emailSubmitted')"
+          >
+            <span class="text-black text-lg">Next</span>
+            <mat-icon class="text-black">arrow_forward_ios</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <div
+        class="flex flex-col justify-center items-center h-[440px] rounded-b-md p-4 bg-violet-500"
+        *ngSwitchCase="'emailSubmitted'"
+      >
+        <p class="text-3xl font-bold">boompic</p>
+        <div class="flex flex-col items-center">
+          <p class="m-0 text-lg font-bold">
+            Welcome back to your corner of the internet.
+          </p>
+          <p
+            class="m-1 py-1 px-6 rounded-md bg-red-200 text-red-700"
+            *ngIf="passwordError"
+          >
+            {{ passwordError }}
+          </p>
+          <input
+            class="w-96 py-2 px-4 rounded-md bg-gray-200/20 focus:border-gray-100 focus:border-2 focus:outline-none"
+            type="password"
+            name="password"
+            id="password"
+            placeholder="Password"
+            [(ngModel)]="password"
+          />
+          <p class="text-yellow-300 text-lg">Forgot Password?</p>
+          <button
+            class="flex justify-center items-center gap-2 m-2 rounded-xl py-2 px-12 bg-gray-200"
+            (click)="continue('passwordSubmitted')"
+          >
+            <span class="text-black text-lg">Log in</span>
+            <mat-icon class="text-black">arrow_forward_ios</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <div
+        class="flex flex-col justify-center items-center h-[440px] rounded-b-md p-4 bg-violet-500"
+        *ngSwitchDefault=""
+      >
+        <p class="text-3xl font-bold">boompic</p>
+        <p>
+          Welcome to your corner of the internet. You'll never be bored again.
+        </p>
+        <div class="flex flex-col items-center">
+          <p class="m-0 text-lg font-bold">Sign Up or Log In</p>
+          <button
+            class="flex justify-center items-center gap-2 m-2 w-80 rounded-xl py-2 px-12 bg-gray-200"
+            (click)="continue('email')"
+          >
+            <mat-icon class="text-gray-700">email</mat-icon>
+            <span class="text-black text-lg">Continue with Google</span>
+          </button>
+          <button
+            class="flex justify-center items-center gap-2 m-2 w-80 rounded-xl py-2 px-12 bg-gray-200"
+            (click)="continue('email')"
+          >
+            <mat-icon class="text-gray-700">email</mat-icon>
+            <span class="text-black text-lg">Continue with Apple</span>
+          </button>
+          <button
+            class="flex justify-center items-center gap-2 m-2 w-80 rounded-xl py-2 px-12 bg-gray-200"
+            (click)="continue('email')"
+          >
+            <mat-icon class="text-gray-700">email</mat-icon>
+            <span class="text-black text-lg">Continue with email</span>
+          </button>
+          <p class="text-yellow-300 text-lg">Coming from Twitter? Sign Up</p>
+        </div>
+      </div>
+    </div>
+  </article>
+</section>

@@ -1,0 +1,51 @@
+<!-- Create new Post -->
+<section class="hidden relative lg:flex gap-4 my-4">
+  <!-- User Picture -->
+  <img
+    class="w-16 h-16 rounded-md bg-white p-auto"
+    src="{{ baseUser.profilePic }}"
+    alt="{{ baseUser.profilePic }}"
+  />
+
+  <!-- New Post Types -->
+  <div
+    class="w-[540px] p-2 rounded-sm"
+    [style.background]="theme.primaryDefault"
+  >
+    <ul class="flex justify-around items-center gap-4 p-2">
+      <li
+        *ngFor="let style of newPostStyles"
+        routerLink="{{ style.url }}"
+        class="flex flex-col items-center justify-center gap-2 cursor-pointer"
+      >
+        <mat-icon class="w-auto h-auto text-5xl" [style.color]="style.color">
+          {{ style.matIcon }}
+        </mat-icon>
+
+        <p class="m-0">{{ style.title }}</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- Filter Tab -->
+<header class="w-full lg:w-[540px] lg:ml-[80px]">
+  <ul class="flex items-center">
+    <li
+      routerLink="{{ tab.link }}"
+      routerLinkActive="text-600 border-b-4"
+      class="p-4 font-bold hover:bg-gray-400/50"
+      [style.color]="
+        tab.title === activeTab.title ? theme.linkPrimary : theme.textPrimary
+      "
+      [style.borderColor]="
+        tab.title === activeTab.title ? theme.linkPrimary : theme.textPrimary
+      "
+      *ngFor="let tab of headerTabs"
+      (click)="toggleActiveTab(tab.title)"
+    >
+      {{ tab.title }}
+    </li>
+  </ul>
+  <hr [style.color]="theme.primaryLighter" />
+</header>

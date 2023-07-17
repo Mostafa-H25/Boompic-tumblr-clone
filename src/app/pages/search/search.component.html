@@ -1,0 +1,87 @@
+<!-- Content -->
+<main class="flex justify-center items-stretch min-h-screen mt-8 mx-auto">
+  <main
+    [className]="
+      viewType === 'grid'
+        ? 'flex flex-col border-r-[1px] border-neutral-100 p-4'
+        : 'flex flex-col shrink basis-[654px] min-h-screen border-r border-neutral-100 p-4 '
+    "
+  >
+    <p class="m-2 p-2 text-2xl font-bold">{{ search | titlecase }}</p>
+    <!-- Search Header Tab -->
+    <header class="flex justify-between items-center mb-4">
+      <!-- Filter Tab -->
+      <ul class="flex items-center gap-4">
+        <li
+          class="flex justify-center items-center gap-2 border-4 rounded-full py-2 px-3 font-bold"
+          [style.color]="theme.accentDefault"
+          [style.borderColor]="theme.accentDefault"
+        >
+          <span>Top</span>
+          <mat-icon>expand_more</mat-icon>
+        </li>
+        <li
+          class="flex justify-center items-center gap-2 border-4 rounded-full py-2 px-3 font-bold"
+          [style.color]="theme.accentDefault"
+          [style.borderColor]="theme.accentDefault"
+        >
+          <span>All Time</span>
+          <mat-icon>expand_more</mat-icon>
+        </li>
+        <li
+          class="flex justify-center items-center gap-2 border-4 rounded-full py-2 px-3 font-bold"
+          [style.color]="theme.accentDefault"
+          [style.borderColor]="theme.accentDefault"
+        >
+          <span>All Posts</span>
+          <mat-icon>expand_more</mat-icon>
+        </li>
+      </ul>
+
+      <!-- View Type -->
+      <ul class="flex justify-center items-start gap-2">
+        <li
+          class="font-bold cursor-pointer"
+          [style.color]="
+            viewType === 'grid' ? theme.textSecondary : theme.textPrimary
+          "
+          (click)="toggleView('list')"
+        >
+          <mat-icon>list</mat-icon>
+        </li>
+        <li
+          class="font-bold cursor-pointer"
+          [style.color]="
+            viewType === 'grid' ? theme.textPrimary : theme.textSecondary
+          "
+          (click)="toggleView('grid')"
+        >
+          <mat-icon>grid_view</mat-icon>
+        </li>
+      </ul>
+    </header>
+
+    <!-- Posts -->
+    <div
+      [className]="
+        viewType === 'grid'
+          ? 'flex flex-col shrink basis-[625px] xl:grid xl:justify-items-center xl:grid-cols-2 2xl:grid-cols-3 3xl:grid-cols-4 xl:gap-x-2'
+          : ''
+      "
+    >
+      <!-- 'flex flex-col p-4' -->
+      <app-post
+        [className]="
+          viewType === 'grid' ? 'max-w-[625px]  xl:min-w-0 xl:w-80' : ''
+        "
+        *ngFor="let post of posts | sort : 'createdAt'"
+        [post]="post"
+      ></app-post>
+    </div>
+  </main>
+
+  <!-- Side Bar -->
+  <app-side-column
+    class="hidden lg:inline-flex w-[315px] min-h-screen"
+  ></app-side-column>
+</main>

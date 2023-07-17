@@ -1,0 +1,108 @@
+<div
+  class="fixed w-screen h-screen z-20"
+  [style.background]="theme.background"
+></div>
+<main
+  class="relative flex justify-center items-center h-screen z-30"
+  [style.color]="theme.textPrimary"
+>
+  <div class="flex justify-center items-start gap-4">
+    <img
+      class="w-20 h-20 rounded-sm"
+      src="{{ baseUser.profilePic }}"
+      alt="{{ baseUser.profilePic }}"
+    />
+    <article
+      class="w-[540px] rounded-sm"
+      [style.background]="theme.primaryDefault"
+    >
+      <!-- Header Bar -->
+      <header class="flex justify-between items-center p-4">
+        <p class="m-0 text-lg font-bold">
+          {{ baseUser.firstName | titlecase }}
+          {{ baseUser.lastName | titlecase }}
+        </p>
+        <mat-icon>settings</mat-icon>
+      </header>
+
+      <!-- Form -->
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <input
+          class="w-full bg-transparent p-2 placeholder:text-bold focus:outline-none focus:bg-gray-400/50"
+          type="text"
+          name="title"
+          id="title"
+          placeholder="Title"
+          formControlName="title"
+        />
+        <textarea
+          class="w-full bg-transparent p-2 focus:outline-none focus:bg-gray-400/50"
+          name="caption"
+          id="caption"
+          rows="10"
+          placeholder="Content"
+          formControlName="caption"
+        ></textarea>
+
+        <!-- Image Input -->
+        <div
+          class="flex flex-wrap justify-center items-center gap-2 w-10/12 my-4 mx-auto p-8 border-2 border-dashed rounded-sm"
+        >
+          <img class="w-48 rounded-md" [src]="imageUrl" alt="" />
+          <input
+            type="file"
+            name="imageUrl"
+            id="imageUrl"
+            (change)="previewImage($event)"
+          />
+        </div>
+
+        <!-- Tags Input -->
+        <div class="m-4 flex flex-wrap items-center gap-2">
+          <ul class="flex flexx-wrap items-center gap-2" *ngIf="tags">
+            <li
+              class="rounded-full py-1 px-4"
+              *ngFor="let tag of tags.controls"
+            >
+              #{{ tag.value }}
+            </li>
+          </ul>
+          <input
+            class="rounded-full py-1 px-4 focus:outline-none"
+            [style.background]="theme.primaryLighter"
+            type="text"
+            name="tags"
+            id="tags"
+            placeholder="# add tags to help people find your post"
+            formControlName="tags"
+            #tag
+            (keyup.space)="addTag(tag)"
+          />
+        </div>
+        <hr />
+
+        <!-- Footer Bar -->
+        <div class="flex justify-between items-center p-4">
+          <button
+            class="rounded-full bg-gray-500 py-1 px-4"
+            (click)="closePage()"
+          >
+            Close
+          </button>
+          <div class="flex gap-2">
+            <button class="rounded-full border-[1px] border-gray-300 py-1 px-4">
+              For EveryOne
+            </button>
+            <button
+              class="rounded-full border-[1px] border-gray-300 py-1 px-4"
+              type="submit"
+              [disabled]="form.invalid"
+            >
+              Post Now
+            </button>
+          </div>
+        </div>
+      </form>
+    </article>
+  </div>
+</main>

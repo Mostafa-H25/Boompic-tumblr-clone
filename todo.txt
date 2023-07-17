@@ -1,0 +1,22 @@
+a)new-post-page
+  1-overlay previous page.
+  2-animation.
+  3-click outside circles.
+b) follow service
+  1-rerender html
+c)notes
+  1-notestoggle loops for all entries. DONE
+  
+d)unsubscribe from all subscriptions
+
+e)palette change DONE
+  1-local storage
+  2-active
+  3-observable DONE
+f)prevpage DONE
+g) edit and delete personal posts DONE
+h) sort replies and reblogs DONE
+j) drop shadow for dropdown box DONE
+k) search
+l)user tags
+m)post visiblity
